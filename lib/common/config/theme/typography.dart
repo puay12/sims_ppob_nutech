@@ -30,7 +30,7 @@ TextStyle bodyTitle = GoogleFonts.openSans(
 TextStyle bodySubtitle = GoogleFonts.openSans(
     textStyle: TextStyle(
         fontSize: 14,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w500,
         color: appColor.textPrimary
     )
 );

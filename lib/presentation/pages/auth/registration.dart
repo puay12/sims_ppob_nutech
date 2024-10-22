@@ -4,6 +4,7 @@ import 'package:sims_ppob_nutech/common/config/theme/typography.dart' as appTypo
 import 'package:sims_ppob_nutech/presentation/pages/auth/login.dart';
 import 'package:sims_ppob_nutech/presentation/provider/auth_provider.dart';
 import 'package:sims_ppob_nutech/presentation/widgets/custom_text_field.dart';
+import 'package:sims_ppob_nutech/presentation/widgets/default_button.dart';
 
 class RegistrationPage extends StatefulWidget {
   RegistrationPage({super.key});
@@ -15,11 +16,14 @@ class RegistrationPage extends StatefulWidget {
 class _RegistrationPageState extends State<RegistrationPage> {
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  late AuthProvider provider = context.read<AuthProvider>();
+  late ScaffoldMessengerState scaffoldMessengerState = ScaffoldMessenger.of(context);
 
   TextEditingController _emailController = TextEditingController();
   TextEditingController _firstNameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  TextEditingController _confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +55,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
         SizedBox(height: 32),
         _buildFormGroup(context),
         SizedBox(height: 32),
-        // DefaultButton(label: "Masuk", buttonAction: () => _submitForm(context)),
+        DefaultButton(label: "Registrasi", buttonAction: () => _submitForm(context)),
         SizedBox(height: 24),
         _buildLoginDirection(context)
       ],
@@ -81,12 +85,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
   }
 
   Widget _buildHeader() {
-    return Flexible(
-        child: Text(
-          "Lengkapi Data untuk Membuat Akun",
-          style: appTypo.headerTitleBigger,
-          textAlign: TextAlign.center,
-        )
+    return Text(
+      "Lengkapi Data untuk Membuat Akun",
+      style: appTypo.headerTitleBigger,
+      textAlign: TextAlign.center,
     );
   }
 
@@ -94,7 +96,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
     return Form(
       key: _formKey,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CustomTextField(
             fieldController: _emailController,
@@ -107,13 +109,44 @@ class _RegistrationPageState extends State<RegistrationPage> {
           ),
           SizedBox(height: 12),
           CustomTextField(
+            fieldController: _firstNameController,
+            textLabel: "Nama Depan",
+            hintText: "Masukkan nama depan Anda",
+            inputType: TextInputType.text,
+            type: "common",
+            isObsecured: false,
+            prefixIcon: Icon(Icons.person),
+          ),
+          SizedBox(height: 12),
+          CustomTextField(
+            fieldController: _lastNameController,
+            textLabel: "Nama Belakang",
+            hintText: "Masukkan nama belakang Anda",
+            inputType: TextInputType.text,
+            type: "common",
+            isObsecured: false,
+            prefixIcon: Icon(Icons.person),
+          ),
+          SizedBox(height: 12),
+          CustomTextField(
             fieldController: _passwordController,
             textLabel: "Password",
-            hintText: "Masukkan password Anda",
+            hintText: "Buat password",
             inputType: TextInputType.visiblePassword,
             type: "password",
-            prefixIcon: Icon(Icons.lock_open_outlined),
-            suffixIcon: Icon(Icons.remove_red_eye_outlined),
+            prefixIcon: Icon(Icons.lock_outline),
+            suffixIcon: Icon(Icons.visibility),
+            isObsecured: true,
+          ),
+          SizedBox(height: 12),
+          CustomTextField(
+            fieldController: _confirmPasswordController,
+            textLabel: "Konfirmasi Password",
+            hintText: "Konfirmasi password",
+            inputType: TextInputType.visiblePassword,
+            type: "password",
+            prefixIcon: Icon(Icons.lock_outline),
+            suffixIcon: Icon(Icons.visibility),
             isObsecured: true,
           )
         ],
@@ -130,7 +163,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
           style: appTypo.bodyGray,
         ),
         TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.of(context).pop(),
             child: Text(
               "disini",
               style: appTypo.bodyRed,
@@ -141,17 +174,46 @@ class _RegistrationPageState extends State<RegistrationPage> {
   }
 
   Future<void> _submitForm(BuildContext context) async {
-    final provider = context.read<AuthProvider>();
-    final ScaffoldMessengerState scaffoldMessengerState = ScaffoldMessenger.of(context);
-
     if (_formKey.currentState!.validate()) {
-      final result = await provider.login(_emailController.text, _passwordController.text);
+      if (_checkPasswordConfirmation()) {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return Center(child: CircularProgressIndicator());
+            }
+        );
 
-      if (result) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+        final result = await provider.registration(
+            _emailController.text,
+            _firstNameController.text,
+            _lastNameController.text,
+            _passwordController.text
+        );
+
+        if (result) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => LoginPage()
+              ),
+              ModalRoute.withName("/login")
+          );
+        } else {
+          scaffoldMessengerState.showSnackBar(SnackBar(content: Text(provider.message, style: appTypo.bodyWhite,)));
+        }
       } else {
-        scaffoldMessengerState.showSnackBar(SnackBar(content: Text(provider.message, style: appTypo.bodyWhite,)));
+        scaffoldMessengerState.showSnackBar(
+            SnackBar(content: Text("Konfirmasi Password tidak tepat", style: appTypo.bodyWhite,))
+        );
       }
+    }
+  }
+
+  bool _checkPasswordConfirmation() {
+    if (_passwordController.text == _confirmPasswordController.text) {
+      return true;
+    } else {
+      return false;
     }
   }
 }

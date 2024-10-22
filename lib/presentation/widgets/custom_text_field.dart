@@ -69,10 +69,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
             case "password":
               return _validatePassword();
             default:
-              return "Harap diisi";
+              return null;
           }
         }
-        return null;
       },
     );
   }

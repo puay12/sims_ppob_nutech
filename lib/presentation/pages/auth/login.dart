@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sims_ppob_nutech/common/config/theme/typography.dart' as appTypo;
+import 'package:sims_ppob_nutech/presentation/pages/auth/registration.dart';
 import 'package:sims_ppob_nutech/presentation/pages/home.dart';
 import 'package:sims_ppob_nutech/presentation/provider/auth_provider.dart';
 import 'package:sims_ppob_nutech/presentation/widgets/custom_text_field.dart';
 import 'package:sims_ppob_nutech/presentation/widgets/default_button.dart';
 
 class LoginPage extends StatefulWidget {
-
   LoginPage({super.key});
 
   @override
@@ -17,17 +17,11 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  late AuthProvider provider;
-  late AnimationController controller;
+  late AuthProvider provider = context.read<AuthProvider>();
+  late ScaffoldMessengerState scaffoldMessengerState = ScaffoldMessenger.of(context);
 
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-
-  @override
-  void initState() {
-    provider = context.read<AuthProvider>();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
     return Form(
       key: _formKey,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CustomTextField(
             fieldController: _emailController,
@@ -136,7 +130,7 @@ class _LoginPageState extends State<LoginPage> {
           style: appTypo.bodyGray,
         ),
         TextButton(
-            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage())),
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => RegistrationPage())),
             child: Text(
               "disini",
               style: appTypo.bodyRed,
@@ -147,8 +141,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _submitForm(BuildContext context) async {
-    final ScaffoldMessengerState scaffoldMessengerState = ScaffoldMessenger.of(context);
-
     if (_formKey.currentState!.validate()) {
       showDialog(
           context: context,
@@ -160,12 +152,16 @@ class _LoginPageState extends State<LoginPage> {
       final result = await provider.login(_emailController.text, _passwordController.text);
 
       if (result) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomePage()
+            ),
+            ModalRoute.withName("/home")
+        );
       } else {
         scaffoldMessengerState.showSnackBar(SnackBar(content: Text(provider.message, style: appTypo.bodyWhite,)));
       }
-
-      Navigator.of(context).pop();
     }
   }
 }

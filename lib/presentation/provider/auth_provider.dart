@@ -10,7 +10,7 @@ class AuthProvider extends ChangeNotifier {
 
   bool isLoading = false;
   bool isLoggedIn = false;
-  bool isRegisted = false;
+  bool isRegistered = false;
 
   String _message = "";
 
@@ -40,12 +40,12 @@ class AuthProvider extends ChangeNotifier {
     });
 
     if (result.status == 0) {
-      isRegisted = true;
+      isRegistered = true;
     }
 
     _message = result.message;
     isLoading = false;
 
-    return isRegisted;
+    return isRegistered;
   }
 }
