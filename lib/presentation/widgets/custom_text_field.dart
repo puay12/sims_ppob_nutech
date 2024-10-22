@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:sims_ppob_nutech/common/config/theme/colors.dart' as appColor;
 import 'package:sims_ppob_nutech/common/config/theme/typography.dart' as appTypo;
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   TextEditingController fieldController;
   String textLabel;
   String hintText;
@@ -26,29 +26,44 @@ class CustomTextField extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  @override
   Widget build(BuildContext context) {
     return TextFormField(
-      obscureText: isObsecured,
+      obscureText: widget.isObsecured,
       style: appTypo.body,
-      controller: fieldController,
-      keyboardType: inputType,
+      controller: widget.fieldController,
+      keyboardType: widget.inputType,
       decoration: InputDecoration(
-        prefixIcon: prefixIcon,
+        prefixIcon: widget.prefixIcon,
         prefixIconColor: appColor.textLightGray,
-        suffixIcon: suffixIcon,
+        suffixIcon: widget.suffixIcon != null
+            ? IconButton(
+                  onPressed: () {
+                    if (widget.type == "password") {
+                      _onPasswordTogglePressed();
+                    }
+                  },
+                  icon: widget.suffixIcon!
+              )
+            : widget.suffixIcon,
         suffixIconColor: appColor.textLightGray,
-        labelText: textLabel,
+        labelText: widget.textLabel,
         labelStyle: appTypo.bodyGray,
-        hintText: hintText,
+        hintText: widget.hintText,
         hintStyle: appTypo.bodyGray,
         border: OutlineInputBorder(),
       ),
       cursorColor: appColor.textDarkGray,
+      autofocus: false,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return "${textLabel} tidak boleh kosong";
+          return "${widget.textLabel} tidak boleh kosong";
         } else {
-          switch (type) {
+          switch (widget.type) {
             case "email":
               return _validateEmail();
             case "password":
@@ -63,7 +78,7 @@ class CustomTextField extends StatelessWidget {
   }
 
   String? _validateEmail() {
-    if (!fieldController.text.contains("@")) {
+    if (!widget.fieldController.text.contains("@")) {
       return "Email Anda salah";
     } else {
       return null;
@@ -71,10 +86,22 @@ class CustomTextField extends StatelessWidget {
   }
 
   String? _validatePassword() {
-    if (fieldController.text.length < 8) {
+    if (widget.fieldController.text.length < 8) {
       return "Password harus minimal 8 karakter";
     } else {
       return null;
     }
+  }
+
+  _onPasswordTogglePressed() {
+    setState(() {
+      if (widget.isObsecured) {
+        widget.suffixIcon = Icon(Icons.visibility_off);
+      } else {
+        widget.suffixIcon = Icon(Icons.visibility);
+      }
+
+      widget.isObsecured = !widget.isObsecured;
+    });
   }
 }

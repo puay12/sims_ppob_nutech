@@ -11,7 +11,7 @@ class LoginUseCase implements UseCase<LoginResponseEntity, Map<String, String>> 
     final result = await _authRepository.login(params!['email']!, params['password']!);
 
     if (result.data != null) {
-      await _authRepository.setToken(result.data!.token);
+      await _authRepository.setToken(result.data!.token!);
     }
 
     return result;

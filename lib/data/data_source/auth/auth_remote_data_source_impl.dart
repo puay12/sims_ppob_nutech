@@ -9,22 +9,13 @@ import '../../model/auth/regist_response_model.dart';
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<LoginResponseModel> login(String email, String password) async {
-    try {
-      final response = await http.post(Uri.parse(baseUrl + loginUrl), body: <String, String> {
-        "email" : email,
-        "password" : password
-      });
+    final response = await http.post(Uri.parse(baseUrl + loginUrl), body: <String, String> {
+      "email" : email,
+      "password" : password
+    });
+    final result = LoginResponseModel.fromJson(jsonDecode(response.body));
 
-      if (response.statusCode == 200) {
-        final result = LoginResponseModel.fromJson(jsonDecode(response.body));
-
-        return result;
-      } else {
-        throw Exception('Failed to login');
-      }
-    } catch(e) {
-      throw Exception('Failed to login');
-    }
+    return result;
   }
 
   @override
@@ -36,14 +27,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         "last_name" : lastName,
         "password" : password
       });
+      final result = RegistResponseModel.fromJson(jsonDecode(response.body));
 
-      if (response.statusCode == 200) {
-        final result = RegistResponseModel.fromJson(jsonDecode(response.body));
-
-        return result;
-      } else {
-        throw Exception('Failed to Register');
-      }
+      return result;
     } catch(e) {
       throw Exception('Failed to Register');
     }

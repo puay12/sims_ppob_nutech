@@ -8,7 +8,7 @@ class LoginResponseEntity extends Equatable {
   LoginResponseEntity({
     required this.status,
     required this.message,
-    this.data,
+    required this.data,
   });
 
   @override

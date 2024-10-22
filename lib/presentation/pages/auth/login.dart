@@ -6,14 +6,28 @@ import 'package:sims_ppob_nutech/presentation/provider/auth_provider.dart';
 import 'package:sims_ppob_nutech/presentation/widgets/custom_text_field.dart';
 import 'package:sims_ppob_nutech/presentation/widgets/default_button.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+
+  LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  late AuthProvider provider;
+  late AnimationController controller;
 
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
-  LoginPage({super.key});
+  @override
+  void initState() {
+    provider = context.read<AuthProvider>();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +37,9 @@ class LoginPage extends StatelessWidget {
           child: Scaffold(
             key: _scaffoldKey,
             appBar: null,
-            body: SingleChildScrollView(
-              child: Padding(
+            body: Container(
+              alignment: Alignment.center,
+              child: SingleChildScrollView(
                 padding: EdgeInsets.all(16),
                 child: _buildBody(context),
               ),
@@ -37,7 +52,6 @@ class LoginPage extends StatelessWidget {
   Widget _buildBody(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
       children: [
         _buildLogo(context),
         SizedBox(height: 24),
@@ -75,12 +89,10 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _buildHeader() {
-    return Flexible(
-        child: Text(
-          "Masuk atau buat akun untuk memulai",
-          style: appTypo.headerTitleBigger,
-          textAlign: TextAlign.center,
-        )
+    return Text(
+      "Masuk atau Buat Akun untuk Memulai",
+      style: appTypo.headerTitleBigger,
+      textAlign: TextAlign.center,
     );
   }
 
@@ -106,8 +118,8 @@ class LoginPage extends StatelessWidget {
             hintText: "Masukkan password Anda",
             inputType: TextInputType.visiblePassword,
             type: "password",
-            prefixIcon: Icon(Icons.lock_open_outlined),
-            suffixIcon: Icon(Icons.remove_red_eye_outlined),
+            prefixIcon: Icon(Icons.lock_outline),
+            suffixIcon: Icon(Icons.visibility),
             isObsecured: true,
           )
         ],
@@ -124,7 +136,7 @@ class LoginPage extends StatelessWidget {
           style: appTypo.bodyGray,
         ),
         TextButton(
-            onPressed: () => {},
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage())),
             child: Text(
               "disini",
               style: appTypo.bodyRed,
@@ -135,10 +147,16 @@ class LoginPage extends StatelessWidget {
   }
 
   Future<void> _submitForm(BuildContext context) async {
-    final provider = context.read<AuthProvider>();
     final ScaffoldMessengerState scaffoldMessengerState = ScaffoldMessenger.of(context);
-    
+
     if (_formKey.currentState!.validate()) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return Center(child: CircularProgressIndicator());
+          }
+      );
+
       final result = await provider.login(_emailController.text, _passwordController.text);
 
       if (result) {
@@ -146,6 +164,8 @@ class LoginPage extends StatelessWidget {
       } else {
         scaffoldMessengerState.showSnackBar(SnackBar(content: Text(provider.message, style: appTypo.bodyWhite,)));
       }
+
+      Navigator.of(context).pop();
     }
   }
 }

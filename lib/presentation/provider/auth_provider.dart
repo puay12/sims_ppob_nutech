@@ -22,8 +22,6 @@ class AuthProvider extends ChangeNotifier {
 
     if (result.data != null) {
       isLoggedIn = true;
-    } else {
-      print("HASIL ERROR ${result.message}");
     }
 
     _message = result.message;

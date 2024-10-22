@@ -12,13 +12,13 @@ class LoginResponseModel extends LoginResponseEntity {
   LoginResponseModel({
     required this.status,
     required this.message,
-    this.data,
+    required this.data,
   }) : super(status: status, message: message, data: data);
 
   factory LoginResponseModel.fromJson(Map<String, dynamic> json) => LoginResponseModel(
     status: json["status"],
     message: json["message"],
-    data: LoginData.fromJson(json["data"]),
+    data: json["data"] != null ? LoginData.fromJson(json["data"]) : null,
   );
 
   Map<String, dynamic> toJson() => {
@@ -33,7 +33,7 @@ class LoginData extends LoginDataEntity {
 
   LoginData({
     required this.token,
-  }) : super(token: '');
+  }) : super(token: token);
 
   factory LoginData.fromJson(Map<String, dynamic> json) => LoginData(
     token: json["token"],
