@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sims_ppob_nutech/common/config/theme/colors.dart';
+import 'package:sims_ppob_nutech/common/config/theme/colors.dart' as appColor;
 import 'package:sims_ppob_nutech/injection_container.dart';
 import 'package:sims_ppob_nutech/presentation/pages/auth/login.dart';
 import 'package:sims_ppob_nutech/presentation/provider/auth_provider.dart';
@@ -29,7 +29,7 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         title: "SIMS PPOB",
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: primaryRed),
+          colorSchemeSeed: appColor.primaryRed,
           useMaterial3: true
         ),
         home: LoginPage(),

@@ -1,5 +1,3 @@
-
-
 import 'dart:ui';
 import 'package:flutter/src/painting/text_style.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,6 +9,14 @@ TextStyle headerTitle = GoogleFonts.openSans(
     fontWeight: FontWeight.bold,
     color: appColor.textPrimary
   )
+);
+
+TextStyle headerTitleBigger = GoogleFonts.openSans(
+    textStyle: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: appColor.textPrimary
+    )
 );
 
 TextStyle bodyTitle = GoogleFonts.openSans(
@@ -34,6 +40,14 @@ TextStyle body = GoogleFonts.openSans(
         fontSize: 12,
         fontWeight: FontWeight.normal,
         color: appColor.textPrimary
+    )
+);
+
+TextStyle bodyGray = GoogleFonts.openSans(
+    textStyle: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.normal,
+        color: appColor.textDarkGray
     )
 );
 

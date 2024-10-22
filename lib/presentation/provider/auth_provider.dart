@@ -16,19 +16,23 @@ class AuthProvider extends ChangeNotifier {
 
   String get message => _message;
 
-  Future<void> login(String email, String password) async {
+  Future<bool> login(String email, String password) async {
     isLoading = true;
     final result = await _loginUseCase(params: {'email': email, 'password': password});
 
     if (result.data != null) {
       isLoggedIn = true;
+    } else {
+      print("HASIL ERROR ${result.message}");
     }
 
     _message = result.message;
     isLoading = false;
+
+    return isLoggedIn;
   }
 
-  Future<void> registration(String email, String firstName, String lastName, String password) async {
+  Future<bool> registration(String email, String firstName, String lastName, String password) async {
     isLoading = true;
     final result = await _registUseCase(params: {
       'email': email,
@@ -43,5 +47,7 @@ class AuthProvider extends ChangeNotifier {
 
     _message = result.message;
     isLoading = false;
+
+    return isRegisted;
   }
 }
