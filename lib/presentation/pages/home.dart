@@ -10,6 +10,7 @@ import 'package:sims_ppob_nutech/presentation/provider/balance_provider.dart';
 import 'package:sims_ppob_nutech/presentation/provider/banner_provider.dart';
 import 'package:sims_ppob_nutech/presentation/provider/get_service_provider.dart';
 import 'package:sims_ppob_nutech/presentation/provider/user_provider.dart';
+import 'package:sims_ppob_nutech/presentation/widgets/inquiry_card.dart';
 import 'package:sims_ppob_nutech/presentation/widgets/service_tile.dart';
 
 class HomePage extends StatefulWidget {
@@ -106,7 +107,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         SizedBox(height: 12),
-        // _buildBanners(context)
+        _buildBanners(context)
       ],
     );
   }
@@ -188,68 +189,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildInquiryBox(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: appColor.cardRed,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-              color: appColor.textLightGray,
-              spreadRadius: 1,
-              blurRadius: 3
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Saldo Anda",
-            style: appTypo.bodyWhite
-          ),
-          SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                  "Rp",
-                  style: appTypo.headerTitle.copyWith(color: appColor.primaryWhite)
-              ),
-              SizedBox(width: 8),
-              Consumer<BalanceProvider>(
-                builder: (context, state, _) {
-                  return Text(
-                    isVisible
-                        ? state.balanceData.toString()
-                        : "************",
-                    style: appTypo.headerTitle.copyWith(color: appColor.primaryWhite),
-                  );
-                },
-              )
-            ],
-          ),
-          SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                  "Lihat Saldo",
-                  style: appTypo.bodyWhite
-              ),
-              SizedBox(width: 8),
-              IconButton(
-                onPressed: () => _changeVisibility(),
-                icon: visibilityIcon,
-                color: appColor.primaryWhite,
-              )
-            ],
-          ),
-        ],
-      ),
+    return Consumer<BalanceProvider>(
+        builder: (context, state, _) {
+          return InquiryCard(
+              balance: state.balanceData != null
+                ? state.balanceData.toString()
+                : 0.toString(),
+              isWithVisibility: true
+          );
+        }
     );
   }
 
@@ -280,17 +228,23 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildBanners(BuildContext context) {
-    return Consumer<BannerProvider>(
-      builder: (context, state, _) {
-        return state.isLoading
-            ? Center(child: CircularProgressIndicator())
-            : state.bannerData != null
-                ? ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) => _buildBox(state.bannerData![index].bannerImage)
-                  )
-                : SizedBox(width: double.infinity, child: Text("Belum ada banner.", style: appTypo.body));
-      },
+    return SizedBox(
+      height: 120,
+      child: Consumer<BannerProvider>(
+        builder: (context, state, _) {
+          return state.isLoading
+              ? Center(child: CircularProgressIndicator())
+              : state.bannerData != null
+                  ? ListView.separated(
+                      shrinkWrap: true,
+                      itemCount: state.bannerData!.length,
+                      separatorBuilder: (context, index) => SizedBox(width: 10),
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) => _buildBox(state.bannerData![index].bannerImage)
+                    )
+                  : SizedBox(width: double.infinity, child: Text("Belum ada banner.", style: appTypo.body));
+        },
+      ),
     );
   }
 
@@ -299,19 +253,8 @@ class _HomePageState extends State<HomePage> {
       child: Image.network(
         imageUrl,
         fit: BoxFit.contain,
+        width: 250,
       ),
     );
-  }
-
-  _changeVisibility() {
-    setState(() {
-      if (isVisible) {
-        visibilityIcon = Icon(Icons.visibility);
-      } else {
-        visibilityIcon = Icon(Icons.visibility_off);
-      }
-
-      isVisible = !isVisible;
-    });
   }
 }

@@ -30,7 +30,7 @@ TextStyle bodyTitle = GoogleFonts.openSans(
 TextStyle bodySubtitle = GoogleFonts.openSans(
     textStyle: TextStyle(
         fontSize: 14,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
         color: appColor.textPrimary
     )
 );
@@ -45,8 +45,8 @@ TextStyle body = GoogleFonts.openSans(
 
 TextStyle bodySmall = GoogleFonts.openSans(
     textStyle: TextStyle(
-        fontSize: 8,
-        fontWeight: FontWeight.bold,
+        fontSize: 10,
+        fontWeight: FontWeight.w600,
         color: appColor.textPrimary
     )
 );
