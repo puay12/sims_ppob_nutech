@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 // backgrounds or buttons
 const Color primaryRed = Color(0xFFFF5630);
+const Color cardRed = Color(0xFFC00400);
 const Color buttonDisabled = Color(0xFFA7A2A2);
 const Color primaryWhite = Color(0xFFFFFFFF);
 

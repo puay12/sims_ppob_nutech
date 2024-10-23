@@ -4,6 +4,8 @@ import 'package:sims_ppob_nutech/common/config/theme/colors.dart' as appColor;
 import 'package:sims_ppob_nutech/injection_container.dart';
 import 'package:sims_ppob_nutech/presentation/pages/auth/login.dart';
 import 'package:sims_ppob_nutech/presentation/provider/auth_provider.dart';
+import 'package:sims_ppob_nutech/presentation/provider/balance_provider.dart';
+import 'package:sims_ppob_nutech/presentation/provider/user_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +26,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => sl<AuthProvider>())
+        ChangeNotifierProvider(create: (context) => sl<AuthProvider>()),
+        ChangeNotifierProvider(create: (context) => sl<UserProvider>()),
+        ChangeNotifierProvider(create: (context) => sl<BalanceProvider>())
       ],
       child: MaterialApp(
         title: "SIMS PPOB",

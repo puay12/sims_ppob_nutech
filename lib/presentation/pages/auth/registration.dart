@@ -6,18 +6,11 @@ import 'package:sims_ppob_nutech/presentation/provider/auth_provider.dart';
 import 'package:sims_ppob_nutech/presentation/widgets/custom_text_field.dart';
 import 'package:sims_ppob_nutech/presentation/widgets/default_button.dart';
 
-class RegistrationPage extends StatefulWidget {
+class RegistrationPage extends StatelessWidget {
   RegistrationPage({super.key});
 
-  @override
-  State<RegistrationPage> createState() => _RegistrationPageState();
-}
-
-class _RegistrationPageState extends State<RegistrationPage> {
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  late AuthProvider provider = context.read<AuthProvider>();
-  late ScaffoldMessengerState scaffoldMessengerState = ScaffoldMessenger.of(context);
 
   TextEditingController _emailController = TextEditingController();
   TextEditingController _firstNameController = TextEditingController();
@@ -174,6 +167,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
   }
 
   Future<void> _submitForm(BuildContext context) async {
+    final AuthProvider provider = context.read<AuthProvider>();
+    final ScaffoldMessengerState scaffoldMessengerState = ScaffoldMessenger.of(context);
+
     if (_formKey.currentState!.validate()) {
       if (_checkPasswordConfirmation()) {
         showDialog(
@@ -199,6 +195,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               ModalRoute.withName("/login")
           );
         } else {
+          Navigator.of(context).pop();
           scaffoldMessengerState.showSnackBar(SnackBar(content: Text(provider.message, style: appTypo.bodyWhite,)));
         }
       } else {

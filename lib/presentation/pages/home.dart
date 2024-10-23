@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sims_ppob_nutech/common/config/theme/colors.dart' as appColor;
 import 'package:sims_ppob_nutech/common/config/theme/typography.dart' as appTypo;
+import 'package:sims_ppob_nutech/domain/entities/balance_response_entity.dart';
+import 'package:sims_ppob_nutech/domain/entities/user_response_entity.dart';
+import 'package:sims_ppob_nutech/presentation/provider/balance_provider.dart';
+import 'package:sims_ppob_nutech/presentation/provider/user_provider.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -11,10 +17,41 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  late String profile;
-  late int inquiry;
+  int balance = 0;
+  late ScaffoldMessengerState scaffoldMessengerState = ScaffoldMessenger.of(context);
+  late UserResponseEntity user;
+  late BalanceResponseEntity inquiry;
   late String service;
   late String banner;
+
+  Future<void> getUserName() async {
+    final UserProvider provider = context.read<UserProvider>();
+    user = await provider.getProfile();
+
+    if (user.data == null) {
+      scaffoldMessengerState.showSnackBar(
+          SnackBar(content: Text(provider.message, style: appTypo.bodyWhite,)));
+    }
+  }
+
+  Future<void> getInquiryBalance() async {
+    final BalanceProvider provider = context.watch<BalanceProvider>();
+    inquiry = await provider.getInquiryBalance();
+
+    if (inquiry.data == null) {
+      scaffoldMessengerState.showSnackBar(
+          SnackBar(content: Text(provider.message, style: appTypo.bodyWhite,)));
+    } else {
+      balance = inquiry.data!.balance;
+    }
+  }
+
+  @override
+  void initState() {
+    getUserName();
+    getInquiryBalance();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,13 +75,13 @@ class _HomePageState extends State<HomePage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         _buildHeader(context),
-        SizedBox(height: 32),
+        SizedBox(height: 20),
         _buildSalutation(),
-        SizedBox(height: 32),
-        // _buildInquiryBox(context),
-        SizedBox(height: 24),
+        SizedBox(height: 16),
+        _buildInquiryBox(context),
+        SizedBox(height: 12),
         // _buildServices(context),
-        SizedBox(height: 24),
+        SizedBox(height: 12),
         // _buildBanners(context)
       ],
     );
@@ -106,16 +143,65 @@ class _HomePageState extends State<HomePage> {
             style: appTypo.bodySubtitle,
           ),
           SizedBox(height: 6),
-          Text(
-            "Muhammad Al Fatih",
-            style: appTypo.bodyTitle,
+          Consumer<UserProvider>(
+            builder: (context, state, _) {
+              return state.isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : Text(
+                      state.userData != null
+                          ? "${state.userData?.firstName} ${state.userData?.lastName}"
+                          : "Bapak/Ibu",
+                      style: appTypo.bodyTitle,
+                    );
+            },
           )
         ],
       ),
     );
   }
 
-  _buildInquiryBox(BuildContext context) {}
+  Widget _buildInquiryBox(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: appColor.cardRed,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [
+          BoxShadow(
+              color: appColor.textLightGray,
+              spreadRadius: 1,
+              blurRadius: 3
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Saldo Anda",
+            style: appTypo.bodyWhite
+          ),
+          SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                  "Rp",
+                  style: appTypo.headerTitle.copyWith(color: appColor.primaryWhite)
+              ),
+              SizedBox(width: 8),
+              Text(
+                "************",
+                style: appTypo.headerTitle.copyWith(color: appColor.primaryWhite),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
 
   _buildServices(BuildContext context) {}
 

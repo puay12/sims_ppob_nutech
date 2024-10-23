@@ -7,20 +7,15 @@ import 'package:sims_ppob_nutech/presentation/provider/auth_provider.dart';
 import 'package:sims_ppob_nutech/presentation/widgets/custom_text_field.dart';
 import 'package:sims_ppob_nutech/presentation/widgets/default_button.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  late AuthProvider provider = context.read<AuthProvider>();
-  late ScaffoldMessengerState scaffoldMessengerState = ScaffoldMessenger.of(context);
 
   TextEditingController _emailController = TextEditingController();
+
   TextEditingController _passwordController = TextEditingController();
 
   @override
@@ -141,6 +136,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _submitForm(BuildContext context) async {
+    final AuthProvider provider = context.read<AuthProvider>();
+    final ScaffoldMessengerState scaffoldMessengerState = ScaffoldMessenger.of(context);
+
     if (_formKey.currentState!.validate()) {
       showDialog(
           context: context,
@@ -160,6 +158,7 @@ class _LoginPageState extends State<LoginPage> {
             ModalRoute.withName("/home")
         );
       } else {
+        Navigator.of(context).pop();
         scaffoldMessengerState.showSnackBar(SnackBar(content: Text(provider.message, style: appTypo.bodyWhite,)));
       }
     }

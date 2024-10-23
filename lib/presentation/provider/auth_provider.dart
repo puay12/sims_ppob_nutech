@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:sims_ppob_nutech/domain/usecase/login_usecase.dart';
-import 'package:sims_ppob_nutech/domain/usecase/regist_usecase.dart';
+import 'package:sims_ppob_nutech/domain/usecase/auth/login_usecase.dart';
+import 'package:sims_ppob_nutech/domain/usecase/auth/regist_usecase.dart';
 
 class AuthProvider extends ChangeNotifier {
   final LoginUseCase _loginUseCase;
@@ -18,6 +18,7 @@ class AuthProvider extends ChangeNotifier {
 
   Future<bool> login(String email, String password) async {
     isLoading = true;
+    notifyListeners();
     final result = await _loginUseCase(params: {'email': email, 'password': password});
 
     if (result.data != null) {
@@ -26,12 +27,14 @@ class AuthProvider extends ChangeNotifier {
 
     _message = result.message;
     isLoading = false;
+    notifyListeners();
 
     return isLoggedIn;
   }
 
   Future<bool> registration(String email, String firstName, String lastName, String password) async {
     isLoading = true;
+    notifyListeners();
     final result = await _registUseCase(params: {
       'email': email,
       'firstName': firstName,
@@ -45,6 +48,7 @@ class AuthProvider extends ChangeNotifier {
 
     _message = result.message;
     isLoading = false;
+    notifyListeners();
 
     return isRegistered;
   }
