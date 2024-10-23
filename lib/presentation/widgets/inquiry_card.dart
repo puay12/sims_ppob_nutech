@@ -24,7 +24,7 @@ class _InquiryCardState extends State<InquiryCard> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(18),
+      padding: EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: appColor.cardRed,
         borderRadius: BorderRadius.circular(16),
@@ -54,15 +54,17 @@ class _InquiryCardState extends State<InquiryCard> {
               ),
               SizedBox(width: 8),
               Text(
-                isVisible
-                    ? widget.balance
-                    : "************",
+                widget.isWithVisibility
+                  ? isVisible
+                      ? widget.balance
+                      : "************"
+                  : widget.balance,
                 style: appTypo.headerTitle.copyWith(color: appColor.primaryWhite),
               )
             ],
           ),
           widget.isWithVisibility
-            ? SizedBox(height: 8)
+            ? SizedBox(height: 5)
             : const SizedBox.shrink(),
           widget.isWithVisibility
             ? Row(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sims_ppob_nutech/common/config/theme/colors.dart' as appColor;
 import 'package:sims_ppob_nutech/common/config/theme/typography.dart' as appTypo;
 import 'package:sims_ppob_nutech/domain/entities/balance_response_entity.dart';
 import 'package:sims_ppob_nutech/domain/entities/banner_response_entity.dart';
@@ -15,7 +14,7 @@ import 'package:sims_ppob_nutech/presentation/widgets/service_tile.dart';
 
 class HomePage extends StatefulWidget {
 
-  HomePage({super.key});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -23,13 +22,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  late ScaffoldMessengerState scaffoldMessengerState = ScaffoldMessenger.of(context);
-  late UserResponseEntity user;
-  late BalanceResponseEntity inquiry;
-  late ServiceResponseEntity service;
-  late BannerResponseEntity banner;
-  late bool isVisible;
-  late Widget visibilityIcon;
+  late ScaffoldMessengerState _scaffoldMessengerState = ScaffoldMessenger.of(context);
+  late UserResponseEntity _user;
+  late BalanceResponseEntity _inquiry;
+  late ServiceResponseEntity _service;
+  late BannerResponseEntity _banner;
 
   Future<void> getData() async {
     final BalanceProvider balanceProvider = context.read<BalanceProvider>();
@@ -37,53 +34,40 @@ class _HomePageState extends State<HomePage> {
     final GetServiceProvider serviceProvider = context.read<GetServiceProvider>();
     final BannerProvider bannerProvider = context.read<BannerProvider>();
 
-    user = await userProvider.getProfile();
-    inquiry = await balanceProvider.getInquiryBalance();
-    service = await serviceProvider.getServices();
-    banner = await bannerProvider.getBanners();
+    _user = await userProvider.getProfile();
+    _inquiry = await balanceProvider.getInquiryBalance();
+    _service = await serviceProvider.getServices();
+    _banner = await bannerProvider.getBanners();
 
-    if (inquiry.data == null) {
-      scaffoldMessengerState.showSnackBar(
+    if (_inquiry.data == null) {
+      _scaffoldMessengerState.showSnackBar(
           SnackBar(content: Text(balanceProvider.message, style: appTypo.bodyWhite,)));
     }
-    if (user.data == null) {
-      scaffoldMessengerState.showSnackBar(
+    if (_user.data == null) {
+      _scaffoldMessengerState.showSnackBar(
           SnackBar(content: Text(userProvider.message, style: appTypo.bodyWhite,)));
     }
-    if (service.data == null) {
-      scaffoldMessengerState.showSnackBar(
+    if (_service.data == null) {
+      _scaffoldMessengerState.showSnackBar(
           SnackBar(content: Text(serviceProvider.message, style: appTypo.bodyWhite,)));
     }
-    if (banner.data == null) {
-      scaffoldMessengerState.showSnackBar(
+    if (_banner.data == null) {
+      _scaffoldMessengerState.showSnackBar(
           SnackBar(content: Text(bannerProvider.message, style: appTypo.bodyWhite,)));
     }
   }
 
   @override
   void initState() {
-    setState(() {
-      visibilityIcon = Icon(Icons.visibility);
-      isVisible = false;
-    });
     getData();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: GestureDetector(
-          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-          child: Scaffold(
-            key: _scaffoldKey,
-            appBar: null,
-            body: SingleChildScrollView(
-              padding: EdgeInsets.all(16),
-              child: _buildBody(context),
-            ),
-          ),
-        )
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: _buildBody(context),
     );
   }
 
@@ -92,7 +76,7 @@ class _HomePageState extends State<HomePage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         _buildHeader(context),
-        SizedBox(height: 20),
+        SizedBox(height: 10),
         _buildSalutation(),
         SizedBox(height: 16),
         _buildInquiryBox(context),
@@ -242,7 +226,7 @@ class _HomePageState extends State<HomePage> {
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) => _buildBox(state.bannerData![index].bannerImage)
                     )
-                  : SizedBox(width: double.infinity, child: Text("Belum ada banner.", style: appTypo.body));
+                  : SizedBox(width: double.infinity, child: Text("Belum ada _banner.", style: appTypo.body));
         },
       ),
     );

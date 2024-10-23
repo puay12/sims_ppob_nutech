@@ -18,53 +18,47 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: GestureDetector(
-          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-          child: Scaffold(
-            key: _scaffoldKey,
-            appBar: _buildAppBar(context),
-            body: SingleChildScrollView(
-              padding: EdgeInsets.all(16),
-              child: _buildBody(context),
-            ),
-          ),
-        )
-    );
-  }
-
-  _buildAppBar(BuildContext context) {
-    return AppBar(
-      leading: IconButton(
-        color: appColor.textPrimary,
-        icon: Icon(Icons.arrow_back),
-        iconSize: 20,
-        splashRadius: 10,
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      ),
-      title: Text(
-        "Transaksi",
-        style: appTypo.bodySubtitle,
-      ),
-      centerTitle: true,
-      backgroundColor: null,
-    );
+    return _buildBody(context);
   }
 
   Widget _buildBody(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        _buildInquiryCard(context),
-        SizedBox(height: 16),
-        Text(
-          "Transaksi",
-          style: appTypo.bodySubtitle,
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(0, 10, 0, 14),
+          alignment: Alignment.center,
+          decoration: const BoxDecoration(
+            color: Colors.transparent,
+            border: Border(
+              bottom: BorderSide(color: appColor.textLightGray)
+            )
+          ),
+          child: Text(
+            "Transaksi",
+            style: appTypo.bodySubtitle.copyWith(fontWeight: FontWeight.bold),
+          ),
         ),
-        SizedBox(height: 12),
-        // _buildTransactionList(context),
+        SizedBox(height: 16),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              _buildInquiryCard(context),
+              SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: Text(
+                  "Transaksi",
+                  style: appTypo.body.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
+              SizedBox(height: 12),
+              _buildTransactionList(context),
+            ],
+          ),
+        )
       ],
     );
   }
@@ -79,6 +73,16 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
               isWithVisibility: false
           );
         }
+    );
+  }
+
+  Widget _buildTransactionList(BuildContext context) {
+    return ListView.separated(
+        shrinkWrap: true,
+        itemCount: 10,
+        separatorBuilder: (context, index) => SizedBox(height: 12),
+        scrollDirection: Axis.vertical,
+        itemBuilder: (context, index) => Text("halo")
     );
   }
 }

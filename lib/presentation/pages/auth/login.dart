@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sims_ppob_nutech/common/config/theme/typography.dart' as appTypo;
 import 'package:sims_ppob_nutech/presentation/pages/auth/registration.dart';
-import 'package:sims_ppob_nutech/presentation/pages/home.dart';
+import 'package:sims_ppob_nutech/presentation/pages/main_page.dart';
 import 'package:sims_ppob_nutech/presentation/provider/auth_provider.dart';
 import 'package:sims_ppob_nutech/presentation/widgets/custom_text_field.dart';
 import 'package:sims_ppob_nutech/presentation/widgets/default_button.dart';
@@ -153,7 +153,7 @@ class LoginPage extends StatelessWidget {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-                builder: (context) => HomePage()
+                builder: (context) => MainPage()
             ),
             ModalRoute.withName("/home")
         );
