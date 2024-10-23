@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:sims_ppob_nutech/common/constants.dart';
-import 'package:sims_ppob_nutech/data/interfaces/user_remote_data_source.dart';
+import 'package:sims_ppob_nutech/data/interfaces/remote/user_remote_data_source.dart';
 import 'package:sims_ppob_nutech/data/model/user_response_model.dart';
 
 class UserRemoteDataSourceImpl implements UserRemoteDataSource {

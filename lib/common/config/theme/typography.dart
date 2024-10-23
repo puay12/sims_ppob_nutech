@@ -43,6 +43,14 @@ TextStyle body = GoogleFonts.openSans(
     )
 );
 
+TextStyle bodySmall = GoogleFonts.openSans(
+    textStyle: TextStyle(
+        fontSize: 8,
+        fontWeight: FontWeight.bold,
+        color: appColor.textPrimary
+    )
+);
+
 TextStyle bodyGray = GoogleFonts.openSans(
     textStyle: TextStyle(
         fontSize: 12,

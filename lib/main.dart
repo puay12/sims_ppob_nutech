@@ -5,6 +5,8 @@ import 'package:sims_ppob_nutech/injection_container.dart';
 import 'package:sims_ppob_nutech/presentation/pages/auth/login.dart';
 import 'package:sims_ppob_nutech/presentation/provider/auth_provider.dart';
 import 'package:sims_ppob_nutech/presentation/provider/balance_provider.dart';
+import 'package:sims_ppob_nutech/presentation/provider/banner_provider.dart';
+import 'package:sims_ppob_nutech/presentation/provider/get_service_provider.dart';
 import 'package:sims_ppob_nutech/presentation/provider/user_provider.dart';
 
 void main() async {
@@ -28,7 +30,9 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(create: (context) => sl<AuthProvider>()),
         ChangeNotifierProvider(create: (context) => sl<UserProvider>()),
-        ChangeNotifierProvider(create: (context) => sl<BalanceProvider>())
+        ChangeNotifierProvider(create: (context) => sl<BalanceProvider>()),
+        ChangeNotifierProvider(create: (context) => sl<GetServiceProvider>()),
+        ChangeNotifierProvider(create: (context) => sl<BannerProvider>())
       ],
       child: MaterialApp(
         title: "SIMS PPOB",

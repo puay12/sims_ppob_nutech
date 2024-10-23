@@ -3,9 +3,14 @@ import 'package:provider/provider.dart';
 import 'package:sims_ppob_nutech/common/config/theme/colors.dart' as appColor;
 import 'package:sims_ppob_nutech/common/config/theme/typography.dart' as appTypo;
 import 'package:sims_ppob_nutech/domain/entities/balance_response_entity.dart';
+import 'package:sims_ppob_nutech/domain/entities/banner_response_entity.dart';
+import 'package:sims_ppob_nutech/domain/entities/service_response_entity.dart';
 import 'package:sims_ppob_nutech/domain/entities/user_response_entity.dart';
 import 'package:sims_ppob_nutech/presentation/provider/balance_provider.dart';
+import 'package:sims_ppob_nutech/presentation/provider/banner_provider.dart';
+import 'package:sims_ppob_nutech/presentation/provider/get_service_provider.dart';
 import 'package:sims_ppob_nutech/presentation/provider/user_provider.dart';
+import 'package:sims_ppob_nutech/presentation/widgets/service_tile.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -17,39 +22,50 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  int balance = 0;
   late ScaffoldMessengerState scaffoldMessengerState = ScaffoldMessenger.of(context);
   late UserResponseEntity user;
   late BalanceResponseEntity inquiry;
-  late String service;
-  late String banner;
+  late ServiceResponseEntity service;
+  late BannerResponseEntity banner;
+  late bool isVisible;
+  late Widget visibilityIcon;
 
-  Future<void> getUserName() async {
-    final UserProvider provider = context.read<UserProvider>();
-    user = await provider.getProfile();
+  Future<void> getData() async {
+    final BalanceProvider balanceProvider = context.read<BalanceProvider>();
+    final UserProvider userProvider = context.read<UserProvider>();
+    final GetServiceProvider serviceProvider = context.read<GetServiceProvider>();
+    final BannerProvider bannerProvider = context.read<BannerProvider>();
 
-    if (user.data == null) {
-      scaffoldMessengerState.showSnackBar(
-          SnackBar(content: Text(provider.message, style: appTypo.bodyWhite,)));
-    }
-  }
-
-  Future<void> getInquiryBalance() async {
-    final BalanceProvider provider = context.watch<BalanceProvider>();
-    inquiry = await provider.getInquiryBalance();
+    user = await userProvider.getProfile();
+    inquiry = await balanceProvider.getInquiryBalance();
+    service = await serviceProvider.getServices();
+    banner = await bannerProvider.getBanners();
 
     if (inquiry.data == null) {
       scaffoldMessengerState.showSnackBar(
-          SnackBar(content: Text(provider.message, style: appTypo.bodyWhite,)));
-    } else {
-      balance = inquiry.data!.balance;
+          SnackBar(content: Text(balanceProvider.message, style: appTypo.bodyWhite,)));
+    }
+    if (user.data == null) {
+      scaffoldMessengerState.showSnackBar(
+          SnackBar(content: Text(userProvider.message, style: appTypo.bodyWhite,)));
+    }
+    if (service.data == null) {
+      scaffoldMessengerState.showSnackBar(
+          SnackBar(content: Text(serviceProvider.message, style: appTypo.bodyWhite,)));
+    }
+    if (banner.data == null) {
+      scaffoldMessengerState.showSnackBar(
+          SnackBar(content: Text(bannerProvider.message, style: appTypo.bodyWhite,)));
     }
   }
 
   @override
   void initState() {
-    getUserName();
-    getInquiryBalance();
+    setState(() {
+      visibilityIcon = Icon(Icons.visibility);
+      isVisible = false;
+    });
+    getData();
     super.initState();
   }
 
@@ -79,8 +95,16 @@ class _HomePageState extends State<HomePage> {
         _buildSalutation(),
         SizedBox(height: 16),
         _buildInquiryBox(context),
-        SizedBox(height: 12),
-        // _buildServices(context),
+        SizedBox(height: 16),
+        _buildServices(context),
+        SizedBox(height: 16),
+        SizedBox(
+          width: double.infinity,
+          child: Text(
+            "Temukan Promo Menarik",
+            style: appTypo.body.copyWith(fontWeight: FontWeight.bold),
+          ),
+        ),
         SizedBox(height: 12),
         // _buildBanners(context)
       ],
@@ -146,7 +170,10 @@ class _HomePageState extends State<HomePage> {
           Consumer<UserProvider>(
             builder: (context, state, _) {
               return state.isLoading
-                  ? Center(child: CircularProgressIndicator())
+                  ? Text(
+                      ".....",
+                      style: appTypo.bodyTitle,
+                    )
                   : Text(
                       state.userData != null
                           ? "${state.userData?.firstName} ${state.userData?.lastName}"
@@ -192,18 +219,99 @@ class _HomePageState extends State<HomePage> {
                   style: appTypo.headerTitle.copyWith(color: appColor.primaryWhite)
               ),
               SizedBox(width: 8),
-              Text(
-                "************",
-                style: appTypo.headerTitle.copyWith(color: appColor.primaryWhite),
+              Consumer<BalanceProvider>(
+                builder: (context, state, _) {
+                  return Text(
+                    isVisible
+                        ? state.balanceData.toString()
+                        : "************",
+                    style: appTypo.headerTitle.copyWith(color: appColor.primaryWhite),
+                  );
+                },
               )
             ],
-          )
+          ),
+          SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                  "Lihat Saldo",
+                  style: appTypo.bodyWhite
+              ),
+              SizedBox(width: 8),
+              IconButton(
+                onPressed: () => _changeVisibility(),
+                icon: visibilityIcon,
+                color: appColor.primaryWhite,
+              )
+            ],
+          ),
         ],
       ),
     );
   }
 
-  _buildServices(BuildContext context) {}
+  Widget _buildServices(BuildContext context) {
+    return Consumer<GetServiceProvider>(
+      builder: (context, state, _) {
+        return state.isLoading
+            ? Center(child: CircularProgressIndicator())
+            : state.serviceData == null
+                ? Center(child: Text("Belum ada layanan tersedia.", style: appTypo.bodySubtitle,))
+                : GridView.builder(
+                    shrinkWrap: true,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 6,
+                      mainAxisSpacing: 20.0,
+                      crossAxisSpacing: 0.0,
+                    ),
+                    itemCount: state.serviceData?.length, // total number of items
+                    itemBuilder: (context, index) {
+                      return ServiceTile(
+                        imagePath: state.serviceData![index].serviceIcon,
+                        textLabel: state.serviceData![index].serviceName,
+                      );
+                    },
+                  );
+      },
+    );
+  }
 
-  _buildBanners(BuildContext context) {}
+  Widget _buildBanners(BuildContext context) {
+    return Consumer<BannerProvider>(
+      builder: (context, state, _) {
+        return state.isLoading
+            ? Center(child: CircularProgressIndicator())
+            : state.bannerData != null
+                ? ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) => _buildBox(state.bannerData![index].bannerImage)
+                  )
+                : SizedBox(width: double.infinity, child: Text("Belum ada banner.", style: appTypo.body));
+      },
+    );
+  }
+
+  Widget _buildBox(String imageUrl) {
+    return Container(
+      child: Image.network(
+        imageUrl,
+        fit: BoxFit.contain,
+      ),
+    );
+  }
+
+  _changeVisibility() {
+    setState(() {
+      if (isVisible) {
+        visibilityIcon = Icon(Icons.visibility);
+      } else {
+        visibilityIcon = Icon(Icons.visibility_off);
+      }
+
+      isVisible = !isVisible;
+    });
+  }
 }

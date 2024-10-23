@@ -9,11 +9,11 @@ class BalanceProvider extends ChangeNotifier {
 
   bool isLoading = false;
   bool isGetBalanceSucceed = false;
-  BalanceDataEntity? _balanceData;
+  int? _balanceData;
   String _message = "";
 
   String get message => _message;
-  BalanceDataEntity? get balanceData => _balanceData;
+  int? get balanceData => _balanceData;
 
   Future<BalanceResponseEntity> getInquiryBalance() async {
     isLoading = true;
@@ -22,9 +22,10 @@ class BalanceProvider extends ChangeNotifier {
 
     if (result.data != null) {
       isGetBalanceSucceed = true;
+      _balanceData = result.data?.balance;
+    } else {
+      _balanceData = 0;
     }
-
-    _balanceData = result.data;
 
     _message = result.message;
     isLoading = false;

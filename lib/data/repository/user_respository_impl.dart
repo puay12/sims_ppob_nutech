@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:sims_ppob_nutech/data/interfaces/user_remote_data_source.dart';
+import 'package:sims_ppob_nutech/data/interfaces/remote/user_remote_data_source.dart';
 import 'package:sims_ppob_nutech/domain/entities/user_response_entity.dart';
 import 'package:sims_ppob_nutech/domain/repository/user_respository.dart';
 
