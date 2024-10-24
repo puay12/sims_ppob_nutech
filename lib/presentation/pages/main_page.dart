@@ -34,13 +34,16 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-            key: _scaffoldKey,
-            appBar: null,
-            body: SingleChildScrollView(
-              child: _screens.elementAt(_selectedIndex),
-            ),
-            bottomNavigationBar: _buildBottomNav(context)
+        child: GestureDetector(
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child: Scaffold(
+              key: _scaffoldKey,
+              appBar: null,
+              body: SingleChildScrollView(
+                child: _screens.elementAt(_selectedIndex),
+              ),
+              bottomNavigationBar: _buildBottomNav(context)
+          ),
         )
     );
   }

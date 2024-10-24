@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:sims_ppob_nutech/common/config/theme/colors.dart' as appColor;
 import 'package:sims_ppob_nutech/common/config/theme/typography.dart' as appTypo;
@@ -17,11 +18,18 @@ class InquiryCard extends StatefulWidget {
 }
 
 class _InquiryCardState extends State<InquiryCard> {
-  bool isVisible = false;
-  Widget visibilityIcon = Icon(Icons.visibility);
+  bool _isVisible = false;
+  Widget _visibilityIcon = Icon(Icons.visibility);
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    String _formattedNumber = NumberFormat("0,000", "id_ID").format(int.parse(widget.balance));
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(14),
@@ -55,10 +63,10 @@ class _InquiryCardState extends State<InquiryCard> {
               SizedBox(width: 8),
               Text(
                 widget.isWithVisibility
-                  ? isVisible
-                      ? widget.balance
+                  ? _isVisible
+                      ? _formattedNumber
                       : "************"
-                  : widget.balance,
+                  : _formattedNumber,
                 style: appTypo.headerTitle.copyWith(color: appColor.primaryWhite),
               )
             ],
@@ -78,7 +86,7 @@ class _InquiryCardState extends State<InquiryCard> {
                   SizedBox(width: 8),
                   IconButton(
                     onPressed: () => _changeVisibility(),
-                    icon: visibilityIcon,
+                    icon: _visibilityIcon,
                     color: appColor.primaryWhite,
                   )
                 ],
@@ -91,13 +99,13 @@ class _InquiryCardState extends State<InquiryCard> {
 
   _changeVisibility() {
     setState(() {
-      if (isVisible) {
-        visibilityIcon = Icon(Icons.visibility);
+      if (_isVisible) {
+        _visibilityIcon = Icon(Icons.visibility);
       } else {
-        visibilityIcon = Icon(Icons.visibility_off);
+        _visibilityIcon = Icon(Icons.visibility_off);
       }
 
-      isVisible = !isVisible;
+      _isVisible = !_isVisible;
     });
   }
 }
