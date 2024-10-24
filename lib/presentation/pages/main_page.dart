@@ -15,7 +15,6 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  late int _selectedIndex;
   static final List<Widget> _screens = [
     const HomePage(),
     TopUpPage(),
@@ -23,12 +22,14 @@ class _MainPageState extends State<MainPage> {
     const ProfilePage()
   ];
 
+  late int _selectedIndex;
+
   @override
   void initState() {
+    super.initState();
     setState(() {
       _selectedIndex = 0;
     });
-    super.initState();
   }
 
   @override

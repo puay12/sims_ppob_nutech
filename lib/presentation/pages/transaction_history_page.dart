@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sims_ppob_nutech/common/config/theme/colors.dart' as appColor;
 import 'package:sims_ppob_nutech/common/config/theme/typography.dart' as appTypo;
 import 'package:sims_ppob_nutech/presentation/provider/balance_provider.dart';
+import 'package:sims_ppob_nutech/presentation/provider/transaction_provider.dart';
 import 'package:sims_ppob_nutech/presentation/widgets/inquiry_card.dart';
 
 class TransactionHistoryPage extends StatefulWidget {
@@ -13,8 +14,35 @@ class TransactionHistoryPage extends StatefulWidget {
 }
 
 class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  late ScaffoldMessengerState scaffoldMessengerState = ScaffoldMessenger.of(context);
+  late ScaffoldMessengerState scaffoldMessengerState;
+  late ScrollController _scrollController;
+  late bool _isLoading;
+  final int _limit = 5;
+
+  int _offset = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _isLoading = false;
+    scaffoldMessengerState = ScaffoldMessenger.of(context);
+    _scrollController = ScrollController();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.maxScrollExtent == _scrollController.position.pixels) {
+        if (!_isLoading) {
+          _isLoading = !_isLoading;
+          _changeOffset();
+        }
+      }
+    });
+  }
+  
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,12 +109,23 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
   }
 
   Widget _buildTransactionList(BuildContext context) {
-    return ListView.separated(
-        shrinkWrap: true,
-        itemCount: 10,
-        separatorBuilder: (context, index) => SizedBox(height: 12),
-        scrollDirection: Axis.vertical,
-        itemBuilder: (context, index) => Text("halo")
+    return Consumer<TransactionProvider>(
+      builder: (context, state, _) {
+        return ListView.builder(
+            shrinkWrap: true,
+            physics: const AlwaysScrollableScrollPhysics(),
+            controller: _scrollController,
+            itemCount: 10,
+            scrollDirection: Axis.vertical,
+            itemBuilder: (context, index) => Text("halo")
+        );
+      }
     );
+  }
+
+  Future<void> _changeOffset() async {
+    final provider = context.read<TransactionProvider>();
+
+    // final result = provider.getHistory(offset);
   }
 }

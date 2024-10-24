@@ -63,6 +63,12 @@ class _TopUpPageState extends State<TopUpPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _topUpAmountController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return _buildBody(context);
   }
