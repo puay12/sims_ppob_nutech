@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sims_ppob_nutech/common/config/theme/colors.dart' as appColor;
 import 'package:sims_ppob_nutech/common/config/theme/typography.dart' as appTypo;
 import 'package:sims_ppob_nutech/common/number_format.dart';
+import 'package:sims_ppob_nutech/domain/entities/transaction_history_response_entity.dart';
 import 'package:sims_ppob_nutech/presentation/provider/balance_provider.dart';
 import 'package:sims_ppob_nutech/presentation/provider/transaction_provider.dart';
 import 'package:sims_ppob_nutech/presentation/widgets/inquiry_card.dart';
@@ -18,6 +19,7 @@ class TransactionHistoryPage extends StatefulWidget {
 class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
   late final ScaffoldMessengerState _scaffoldMessengerState = ScaffoldMessenger.of(context);
   late int _offset;
+  late List<RecordEntity> _recordData = [];
   final int _limit = 5;
 
   @override
@@ -102,32 +104,32 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
               ? state.historyData!.records!.isNotEmpty
                   ? Column(
                       children: [
-                        ListView.builder(
-                            shrinkWrap: true,
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            itemCount: state.historyData!.records!.length ?? 0,
-                            scrollDirection: Axis.vertical,
-                            itemBuilder: (context, index) => _buildTransactionBox(
-                              state.historyData!.records![index].transactionType,
-                              state.historyData!.records![index].totalAmount.toString(),
-                              state.historyData!.records![index].description,
-                              state.historyData!.records![index].createdOn
-                            )
-                        ),
+                        _buildListView(),
                         state.historyData!.records!.isNotEmpty
                            ? _buildShowMore()
                            : SizedBox.shrink()
                       ],
                     )
-                  : Column(
-                      children: [
-                        _buildNoTransaction(),
-                        SizedBox(height: 8),
-                        _buildBackToBeginning()
-                      ],
-                    )
+                  : _offset == 0
+                      ? _buildNoTransaction()
+                      : _buildListView()
               : _buildNoTransaction();
       }
+    );
+  }
+
+  Widget _buildListView() {
+    return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: _recordData.length,
+        scrollDirection: Axis.vertical,
+        itemBuilder: (context, index) => _buildTransactionBox(
+            _recordData[index].transactionType,
+            _recordData[index].totalAmount.toString(),
+            _recordData[index].description,
+            _recordData[index].createdOn
+        )
     );
   }
 
@@ -210,21 +212,6 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
     );
   }
 
-  Widget _buildBackToBeginning() {
-    return TextButton(
-        onPressed: () {
-          setState(() {
-            _offset = 0;
-          });
-          _getData();
-        },
-        child: Text(
-          "Kembali ke Awal",
-          style: appTypo.bodyRed.copyWith(fontWeight: FontWeight.bold),
-        )
-    );
-  }
-
   Future<void> _loadMoreData() async {
     setState(() {
       _offset = _offset + _limit;
@@ -233,12 +220,17 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
   }
 
   Future<void> _getData() async {
+    print("iyeh");
     final provider = context.read<TransactionProvider>();
     final result = await provider.getHistory(_offset);
 
     if (result.data == null) {
       _scaffoldMessengerState.showSnackBar(
           SnackBar(content: Text(provider.message, style: appTypo.bodyWhite,)));
+    } else {
+      result.data!.records!.map((item) {
+        _recordData.add(item);
+      }).toList();
     }
   }
 
