@@ -1,5 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sims_ppob_nutech/data/interfaces/auth_local_data_source.dart';
+import 'package:sims_ppob_nutech/data/interfaces/local/auth_local_data_source.dart';
 
 class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   final String tokenKey = "token";

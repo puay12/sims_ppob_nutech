@@ -5,11 +5,13 @@ import 'package:sims_ppob_nutech/common/config/theme/typography.dart' as appTypo
 class DefaultButton extends StatelessWidget {
   String label;
   Function() buttonAction;
+  bool? isDynamic;
 
   DefaultButton({
     Key? key,
     required this.label,
-    required this.buttonAction
+    required this.buttonAction,
+    this.isDynamic
   }) : super(key: key);
 
   @override
@@ -22,8 +24,13 @@ class DefaultButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),
+          disabledBackgroundColor: appColor.textLightGray,
         ),
-        onPressed: buttonAction,
+        onPressed: isDynamic != null
+            ? isDynamic!
+                ? buttonAction
+                : null
+            : buttonAction,
         child: Text(
           label,
           style: appTypo.bodyWhite

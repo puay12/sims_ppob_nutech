@@ -173,10 +173,11 @@ class RegistrationPage extends StatelessWidget {
     if (_formKey.currentState!.validate()) {
       if (_checkPasswordConfirmation()) {
         showDialog(
-            context: context,
-            builder: (context) {
-              return Center(child: CircularProgressIndicator());
-            }
+          context: context,
+          builder: (context) {
+            return Center(child: CircularProgressIndicator());
+          },
+          barrierDismissible: false
         );
 
         final result = await provider.registration(

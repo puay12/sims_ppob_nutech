@@ -141,10 +141,11 @@ class LoginPage extends StatelessWidget {
 
     if (_formKey.currentState!.validate()) {
       showDialog(
-          context: context,
-          builder: (context) {
-            return Center(child: CircularProgressIndicator());
-          }
+        context: context,
+        builder: (context) {
+          return Center(child: CircularProgressIndicator());
+        },
+        barrierDismissible: false
       );
 
       final result = await provider.login(_emailController.text, _passwordController.text);

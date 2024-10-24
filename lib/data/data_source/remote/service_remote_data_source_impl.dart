@@ -9,7 +9,7 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
   @override
   Future<ServiceResponseModel> getServices(String token) async {
     final response = await http.get(Uri.parse(baseUrl + servicesUrl), headers: {
-      HttpHeaders.authorizationHeader: "Bearer ${token}"
+      HttpHeaders.authorizationHeader: "Bearer $token"
     });
     final result = ServiceResponseModel.fromJson(jsonDecode(response.body));
 

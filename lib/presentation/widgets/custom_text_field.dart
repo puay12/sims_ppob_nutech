@@ -55,9 +55,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
         labelStyle: appTypo.bodyGray,
         hintText: widget.hintText,
         hintStyle: appTypo.bodyGray,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(borderSide: BorderSide(color: appColor.textLightGray)),
       ),
-      cursorColor: appColor.textDarkGray,
+      cursorColor: appColor.textLightGray,
       autofocus: false,
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -68,6 +68,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
               return _validateEmail();
             case "password":
               return _validatePassword();
+            case "topup":
+              return _validateTopupAmount();
             default:
               return null;
           }
@@ -87,6 +89,16 @@ class _CustomTextFieldState extends State<CustomTextField> {
   String? _validatePassword() {
     if (widget.fieldController.text.length < 8) {
       return "Password harus minimal 8 karakter";
+    } else {
+      return null;
+    }
+  }
+
+  String? _validateTopupAmount() {
+    if (int.parse(widget.fieldController.text) < 10000) {
+      return "Nominal minimal adalah 10.000";
+    } else if (int.parse(widget.fieldController.text) > 100000) {
+      return "Nominal maksimal adalah 100.000";
     } else {
       return null;
     }

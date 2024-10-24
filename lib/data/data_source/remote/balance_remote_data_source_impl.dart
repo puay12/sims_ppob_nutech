@@ -9,7 +9,7 @@ class BalanceRemoteDataSourceImpl implements BalanceRemoteDataSource {
   @override
   Future<BalanceResponseModel> getInquiryBalance(String token) async {
     final response = await http.get(Uri.parse(baseUrl + balanceUrl), headers: {
-      HttpHeaders.authorizationHeader: "Bearer ${token}"
+      HttpHeaders.authorizationHeader: "Bearer $token"
     });
     final result = BalanceResponseModel.fromJson(jsonDecode(response.body));
 

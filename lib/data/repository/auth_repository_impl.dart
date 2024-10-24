@@ -1,4 +1,4 @@
-import 'package:sims_ppob_nutech/data/interfaces/auth_local_data_source.dart';
+import 'package:sims_ppob_nutech/data/interfaces/local/auth_local_data_source.dart';
 import 'package:sims_ppob_nutech/data/interfaces/remote/auth_remote_data_source.dart';
 import 'package:sims_ppob_nutech/domain/entities/auth/login_response_entity.dart';
 import 'package:sims_ppob_nutech/domain/entities/auth/regist_response_entity.dart';

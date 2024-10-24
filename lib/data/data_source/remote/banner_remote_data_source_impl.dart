@@ -9,7 +9,7 @@ class BannerRemoteDataSourceImpl implements BannerRemoteDataSource {
   @override
   Future<BannerResponseModel> getBanners(String token) async {
     final response = await http.get(Uri.parse(baseUrl + bannerUrl), headers: {
-      HttpHeaders.authorizationHeader: "Bearer ${token}"
+      HttpHeaders.authorizationHeader: "Bearer $token"
     });
     final result = BannerResponseModel.fromJson(jsonDecode(response.body));
 

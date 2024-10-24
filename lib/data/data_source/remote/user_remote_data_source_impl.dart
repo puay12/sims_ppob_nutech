@@ -9,7 +9,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   @override
   Future<UserResponseModel> getProfile(String token) async {
     final response = await http.get(Uri.parse(baseUrl + profileUrl), headers: {
-      HttpHeaders.authorizationHeader: "Bearer ${token}"
+      HttpHeaders.authorizationHeader: "Bearer $token"
     });
     final result = UserResponseModel.fromJson(jsonDecode(response.body));
 
@@ -21,7 +21,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
     final response = await http.put(
       Uri.parse(baseUrl + profileUpdateUrl),
       headers: {
-        HttpHeaders.authorizationHeader: "Bearer ${token}"
+        HttpHeaders.authorizationHeader: "Bearer $token"
       },
       body: <String, String> {
         'first_name': firstName,
@@ -36,7 +36,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   @override
   Future<UserResponseModel> updateProfileImage(String token, File image) async {
     final request = http.MultipartRequest('PUT', Uri.parse(baseUrl + profileImageUrl));
-    request.headers["authorization"] = "Bearer ${token}";
+    request.headers["authorization"] = "Bearer $token";
 
     final response = await request.send();
     final responseData = await response.stream.toBytes();

@@ -59,8 +59,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    getData();
     super.initState();
+    getData();
   }
 
   @override
@@ -237,7 +237,7 @@ class _HomePageState extends State<HomePage> {
       child: Image.network(
         imageUrl,
         fit: BoxFit.contain,
-        width: 250,
+        width: 270,
       ),
     );
   }

@@ -25,21 +25,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.fromLTRB(0, 10, 0, 14),
-          alignment: Alignment.center,
-          decoration: const BoxDecoration(
-            color: Colors.transparent,
-            border: Border(
-              bottom: BorderSide(color: appColor.textLightGray)
-            )
-          ),
-          child: Text(
-            "Transaksi",
-            style: appTypo.bodySubtitle.copyWith(fontWeight: FontWeight.bold),
-          ),
-        ),
+        _buildHeader(),
         SizedBox(height: 16),
         Padding(
           padding: const EdgeInsets.all(16.0),
@@ -60,6 +46,24 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
           ),
         )
       ],
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(0, 10, 0, 14),
+      alignment: Alignment.center,
+      decoration: const BoxDecoration(
+          color: Colors.transparent,
+          border: Border(
+              bottom: BorderSide(color: appColor.textLightGray)
+          )
+      ),
+      child: Text(
+        "Transaksi",
+        style: appTypo.bodySubtitle.copyWith(fontWeight: FontWeight.bold),
+      ),
     );
   }
 
