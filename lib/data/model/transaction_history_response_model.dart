@@ -42,8 +42,8 @@ class TransactionHistoryDataModel extends TransactionHistoryDataEntity {
   }) : super(offset: offset, limit: limit, records: records);
 
   factory TransactionHistoryDataModel.fromJson(Map<String, dynamic> json) => TransactionHistoryDataModel(
-    offset: json["offset"],
-    limit: json["limit"],
+    offset: int.parse(json["offset"]),
+    limit: int.parse(json["limit"]),
     records: json["records"] != null
               ? List<RecordModel>.from(json["records"].map((x) => RecordModel.fromJson(x)))
               : null,

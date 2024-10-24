@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:sims_ppob_nutech/common/config/theme/colors.dart' as appColor;
 import 'package:sims_ppob_nutech/common/config/theme/typography.dart' as appTypo;
+import 'package:sims_ppob_nutech/common/number_format.dart';
 
 class InquiryCard extends StatefulWidget {
   final String balance;
@@ -28,7 +29,7 @@ class _InquiryCardState extends State<InquiryCard> {
 
   @override
   Widget build(BuildContext context) {
-    String _formattedNumber = NumberFormat("0,000", "id_ID").format(int.parse(widget.balance));
+    String _formattedNumber = toBalanceFormat(widget.balance);
 
     return Container(
       width: double.infinity,

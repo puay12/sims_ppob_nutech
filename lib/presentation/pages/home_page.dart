@@ -21,7 +21,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late ScaffoldMessengerState _scaffoldMessengerState;
+  late final ScaffoldMessengerState _scaffoldMessengerState = ScaffoldMessenger.of(context);
   late UserResponseEntity _user;
   late BalanceResponseEntity _inquiry;
   late ServiceResponseEntity _service;
@@ -60,9 +60,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     getData();
-    setState(() {
-      _scaffoldMessengerState = ScaffoldMessenger.of(context);
-    });
   }
 
   @override

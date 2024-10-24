@@ -9,11 +9,9 @@ class TopupProvider extends ChangeNotifier {
 
   bool isLoading = false;
   bool isTopupSucceed = false;
-  int? _resultedBalance;
   String _message = "";
 
   String get message => _message;
-  int? get resultedBalance => _resultedBalance;
 
   Future<TopupResponseEntity> performTopup(int topUpAmount) async {
     isLoading = true;
@@ -23,8 +21,6 @@ class TopupProvider extends ChangeNotifier {
     if (result.data != null) {
       isTopupSucceed = true;
     }
-
-    _resultedBalance = result.data?.balance;
 
     _message = result.message;
     isLoading = false;

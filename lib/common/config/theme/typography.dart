@@ -67,6 +67,14 @@ TextStyle bodyRed = GoogleFonts.openSans(
     )
 );
 
+TextStyle bodyGreen = GoogleFonts.openSans(
+    textStyle: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.bold,
+        color: appColor.textIncome
+    )
+);
+
 TextStyle bodyWhite = GoogleFonts.openSans(
     textStyle: TextStyle(
         fontSize: 12,
